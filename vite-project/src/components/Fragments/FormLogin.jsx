@@ -4,9 +4,12 @@ import Button from "../Elements/Button/Buttons"
 const FormLogin = () => {
 
   const handleLogin = (event) => {
-    console.log("login")
+    localStorage.setItem("email", event.target.email.value)
+    localStorage.setItem("password", event.target.password.value)
     event.preventDefault()
+    window.location.href = "/products"
   }
+  
     return (
         <form onSubmit={handleLogin}>
           <InputForm

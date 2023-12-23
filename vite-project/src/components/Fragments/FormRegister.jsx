@@ -2,8 +2,16 @@ import InputForm from "../Elements/Input/InputForm";
 import Button from "../Elements/Button/Buttons";
 
 const FormRegister = () => {
+  const handleRegister = (event) => {
+    localStorage.setItem("email", event.target.email.value)
+    localStorage.setItem("name", event.target.name.name)
+    localStorage.setItem("password", event.target.password.value)
+    localStorage.setItem("retypepassword", event.target.retypepassword.value)
+    event.preventDefault()
+    window.location.href = "/login"
+  }
     return (
-        <form>
+        <form onSubmit={handleRegister}>
           <InputForm
             label="Email"
             type="email"
@@ -28,7 +36,7 @@ const FormRegister = () => {
             name="retypepassword"
             placeholder="Retype your password..."
           /> 
-          <Button  variant="bg-blue-600 w-full" >Register</Button>
+          <Button  variant="bg-blue-600 w-full">Register</Button>
         </form>
     )
 }
