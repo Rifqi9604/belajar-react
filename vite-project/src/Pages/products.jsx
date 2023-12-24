@@ -1,6 +1,6 @@
 import Button from "../components/Elements/Button/Buttons"
 import CardProduct from "../components/Fragments/CardProduct"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 const products = [
     {
@@ -37,22 +37,37 @@ const ProductPage   = () => {
         window.location.href = "/login"
     }
     
-    const [cart, setCart] = useState([
-        {
-            name: "Sepatu Lama",
-            qty: 1
-        }
-    ])
+    const [cart, setCart] = useState([])
 
-    const handleAddCart = (productName) => {
-        setCart([
-            ...cart,
-            {
-                name: productName,
-                qty: 1
+    const [totalPrice, setTotalPrice] = useState(0)
+
+    useEffect(() => {
+        setCart(JSON.parse(localStorage.getItem("cart") || "[]"))
+
+    }, [])
+
+    useEffect(() => {
+        if (cart.length > 0){
+            const sum = cart.reduce((acc, item) => {
+                const product = products.find((product) => product.id === item.id)
+                return acc + product.price * item.qty
+            }, 0)
+            setTotalPrice(sum)
+            localStorage.setItem("cart", JSON.stringify(cart))
+        }
+    }, [cart])
+
+    const handleAddCart = (id) => {
+            if(cart.find(item => item.id === id)){
+                setCart(
+                    cart.map(item => item.id === id ? {...item, qty: item.qty + 1} : item
+                    ))
+            }else{
+                setCart([...cart, {id, qty: 1}])
             }
-        ])
     }
+
+
 
 
     return(
@@ -71,19 +86,52 @@ const ProductPage   = () => {
                             <CardProduct.Body title={product.title}>
                                 {product.description}
                             </CardProduct.Body>
-                        <CardProduct.Footer price={product.price} handleAddCart={handleAddCart}/>
+                        <CardProduct.Footer price={product.price} handleAddCart={handleAddCart} id={product.id}/>
                         </CardProduct>
                 ))}
                 </div>
                 <div className="w-1/3">
-                    <div className="text-3xl font-bold text-blue-600 bg-red-200">
+                    <div className="text-3xl font-bold text-blue-600 ml-5 mb-2">
                         Cart    
                     </div>
-                    <ul>
-                        {cart.map(item => (
-                            <li key={item.name}>{item.name}</li>
-                        ))}
-                    </ul>
+                    <table className="table-auto text-left border-separate border-spacing-x-5">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody className="my-6">
+                            {cart.map((item) => {
+                                const product = products.find((product) => product.id === item.id)
+                                return(
+                                    <tr key={item.id}>
+                                        <td>{product.title}</td>
+                                        <td>Rp {(product.price).toLocaleString('id-ID', ({styles: 'currency', currency: "IDR"}))}
+                                        </td>
+                                        <td>{item.qty}</td>
+                                        <td>Rp {(product.price * item.qty).toLocaleString('id-ID', ({styles: 'currency', currency: "IDR"}))}
+                                        </td>
+                                    </tr>
+                                )
+                            })}
+
+                            <tr>
+                                <td colSpan={3}>
+                                    <b>
+                                        Total Price
+                                    </b>
+                                </td>
+                                <td>
+                                    <b>
+                                        Rp {(totalPrice).toLocaleString('id-ID', ({styles: 'currency', currency: "IDR"}))}
+                                    </b>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </>
