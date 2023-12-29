@@ -9,7 +9,7 @@ import { getProduct } from "../services/products.service"
 
 const ProductPage   = () => {
 
-    const email = localStorage.getItem("email")
+    
     const handleLogout = () => {
         localStorage.removeItem("email")
         localStorage.removeItem("password")
@@ -25,8 +25,11 @@ const ProductPage   = () => {
 
     useEffect(() => {
         setCart(JSON.parse(localStorage.getItem("cart") || "[]"))
-
     }, [])
+
+    useEffect(() => {
+        getUsername(token)
+    })
 
     useEffect(() => {
         if (products.length > 0 && cart.length > 0){
@@ -88,7 +91,7 @@ const ProductPage   = () => {
                             <CardProduct.Footer price={product.price} handleAddCart={handleAddCart} id={product.id}/>
                             </CardProduct>
                     ))}
-                    </div>
+                    </div>  
                 <div className="w-1/3">
                     <div className="text-3xl font-bold text-blue-600 ml-5 mb-2">
                         Cart    

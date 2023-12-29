@@ -1,15 +1,16 @@
 import InputForm from "../Elements/Input/InputForm"
 import Button from "../Elements/Button/Buttons"
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, useState } from "react"
 import { login } from "../../services/Auth.service"
 
 const FormLogin = () => {
+  const [loginFailed, setLoginFailed] = useState("")
 
   const handleLogin = (event) => {
     // localStorage.setItem("email", event.target.email.value)
     // localStorage.setItem("password", event.target.password.value)
     event.preventDefault()
-    // window.location.href = "/products"
+    window.location.href = "/products"
     const data = {
       username: event.target.username.value,
       password: event.target.password.value
@@ -18,7 +19,7 @@ const FormLogin = () => {
       if(status){
         localStorage.setItem("token", res)
       }else{
-        console.log(res.response.data)
+        setLoginFailed(res.response.data)
       }
     }))
   }
@@ -45,6 +46,9 @@ const FormLogin = () => {
             placeholder="Enter your password..."
           /> 
           <Button variant="bg-blue-600 w-full" type="submit">Login</Button>
+          {loginFailed && 
+          <p className="text-red-500 mt-5 text-center">Login Failed</p>
+          }
         </form>
     )
 }
